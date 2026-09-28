@@ -273,7 +273,8 @@ SEX_MARKERS <- list(
 predict_sex2 <- function(expr_mat,
                          threshold = NULL,
                          reported  = NULL,
-                         verbose   = TRUE) {
+                         verbose   = TRUE,
+                          predict_sex = c("sex_score","y_score") {
   
   expr_mat <- as.matrix(expr_mat)
   gene_ids  <- rownames(expr_mat)
@@ -342,9 +343,14 @@ predict_sex2 <- function(expr_mat,
       threshold <- find_threshold_supervised(sex_score, reported, verbose)
     }
   }
-  
+
+  if (predict_sex == "y_score"){
   result$predicted_sex <- ifelse(result$y_score >= 2^threshold, "male", "female")
-  
+    }
+  if (predict_sex == "sex_score"){
+  result$predicted_sex <- ifelse(result$sex_score >= threshold, "male", "female")
+    }
+              
   # ── Merge self-reported sex ────────────────────────────────────────────────
   if (!is.null(reported)) {
     reported_df <- data.frame(
