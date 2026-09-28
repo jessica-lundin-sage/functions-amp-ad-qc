@@ -6,7 +6,9 @@
 library(dplyr)
 library(ggplot2)
 library(pROC)
-
+library(edgeR)
+library(ggrepel)
+library(patchwork)
 
 # demographics ----
 make_bar_plot <- function(metadata, var_of_interest, facet_var = "tissue") {
