@@ -276,6 +276,7 @@ predict_sex2 <- function(expr_mat,
                          verbose   = TRUE,
                           predict_sex = c("sex_score","y_score")) {
   
+  predict_sex <- match.arg(predict_sex)   # <- picks the first value ("sex_score") if you don't choose
   expr_mat <- as.matrix(expr_mat)
   gene_ids  <- rownames(expr_mat)
   
