@@ -274,7 +274,7 @@ predict_sex2 <- function(expr_mat,
                          threshold = NULL,
                          reported  = NULL,
                          verbose   = TRUE,
-                          predict_sex = c("sex_score","y_score") {
+                          predict_sex = c("sex_score","y_score")) {
   
   expr_mat <- as.matrix(expr_mat)
   gene_ids  <- rownames(expr_mat)
