@@ -707,6 +707,55 @@ run_pca_outliers2 <- function(counts,
   )
 }
 
+      
+run_pca_rna_metrics <- function(counts,
+                              metadata,
+                              var_cutoff = 10,
+                              center = TRUE,
+                              scale = TRUE) {
+  # ── Subset to tissue ────────────────────────────────────────────────────────
+  meta_t  <- metadata
+  samples <- intersect(meta_t$specimenID, colnames(counts))
+
+  if (length(samples) < 3)
+    stop(sprintf("'%s' has only %d samples in both objects — need at least 3.",   
+                 length(samples)))
+
+  n_missing <- nrow(meta_t) - length(samples)
+  if (n_missing > 0)
+    message(sprintf("  [%s] %d metadata samples absent from count matrix.",          
+                    n_missing))
+
+  mat    <- counts[, samples, drop = FALSE]
+  meta_t <- meta_t[meta_t$specimenID %in% samples, ]
+  n_use  <- nrow(mat)
+  pca_input <- t(mat)        # prcomp expects samples × genes
+
+  # ── PCA ──────────────────────────────────────────────────────────────────────
+  pca      <- prcomp(pca_input, center = center, scale. = scale)
+  vexp     <- summary(pca)$importance["Proportion of Variance", ] * 100
+  scores   <- as.data.frame(pca$x[, 1:min(10, ncol(pca$x))])
+  loadings <- pca$rotation
+  scores$specimenID <- rownames(scores)
+
+  # ── Select PCs with > var_cutoff% variance ─────────────────────────────────
+  pcs_screened <- names(vexp)[vexp > var_cutoff]
+  if (length(pcs_screened) == 0) {
+    warning("No PCs explained > ", var_cutoff, "% variance. Defaulting to PC1.")
+    pcs_screened <- "PC1"
+  }
+
+  pc_cols <- intersect(pcs_screened, names(scores))
+
+  list)
+    loadings      = loadings,
+    var_explained = vexp,
+    pcs_screened  = pc_cols,  
+    scores = scores,
+    n_genes_used  = n_use 
+  )
+}
+
 
 plot_pca <- function(pca_result,
                      x_pc       = "PC1",
