@@ -747,7 +747,7 @@ run_pca_rna_metrics <- function(counts,
 
   pc_cols <- intersect(pcs_screened, names(scores))
 
-  list)
+  list(
     loadings      = loadings,
     var_explained = vexp,
     pcs_screened  = pc_cols,  
